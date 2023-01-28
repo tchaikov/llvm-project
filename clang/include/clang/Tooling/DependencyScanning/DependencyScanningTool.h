@@ -93,9 +93,22 @@ public:
   getDependencyFile(const std::vector<std::string> &CommandLine, StringRef CWD,
                     std::optional<StringRef> ModuleName = std::nullopt);
 
+  /// Collect the module dependency in P1689 format for C++20 named modules.
+  ///
+  /// \param MakeformatOutput The output parameter for dependency information
+  /// in make format if the command line requires to generate make-format
+  /// dependency information by `-MD -MF <dep_file>`.
+  ///
+  /// \param MakeformatOutputPath The output parameter for the path to
+  /// \param MakeformatOutput.
+  ///
+  /// \returns A \c StringError with the diagnostic output if clang errors
+  /// occurred, P1689 dependency format rules otherwise.
   llvm::Expected<clang::tooling::dependencies::P1689Rule>
-  getP1689ModuleDependencyFile(const clang::tooling::CompileCommand &Command,
-                               StringRef CWD);
+  getP1689ModuleDependencyFile(
+      const clang::tooling::CompileCommand &Command, StringRef CWD,
+      std::string &MakeformatOutput, std::string &MakeformatOutputPath,
+      llvm::Optional<StringRef> ModuleName = std::nullopt);
 
   /// Collect the full module dependency graph for the input, ignoring any
   /// modules which have already been seen. If \p ModuleName isn't empty, this
