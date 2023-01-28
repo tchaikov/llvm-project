@@ -67,6 +67,12 @@ struct FullDependenciesResult {
   std::vector<ModuleDeps> DiscoveredModules;
 };
 
+struct P1689Rule {
+  std::string PrimaryOutput;
+  llvm::Optional<P1689ModuleInfo> Provides;
+  std::vector<P1689ModuleInfo> Requires;
+};
+
 /// The high-level implementation of the dependency discovery tool that runs on
 /// an individual worker thread.
 class DependencyScanningTool {
@@ -86,6 +92,10 @@ public:
   llvm::Expected<std::string>
   getDependencyFile(const std::vector<std::string> &CommandLine, StringRef CWD,
                     std::optional<StringRef> ModuleName = std::nullopt);
+
+  llvm::Expected<clang::tooling::dependencies::P1689Rule>
+  getP1689ModuleDependencyFile(const clang::tooling::CompileCommand &Command,
+                               StringRef CWD);
 
   /// Collect the full module dependency graph for the input, ignoring any
   /// modules which have already been seen. If \p ModuleName isn't empty, this
